@@ -15,7 +15,7 @@ namespace SnakeEater.Patches
     internal class InteractTriggerPatch
     {
 
-        static Coroutine? FadeInCoroutine;
+        static Coroutine PlaybackCoroutine;
 
         [HarmonyPatch("SetUsingLadderOnLocalClient")]
         [HarmonyPrefix]
@@ -23,35 +23,38 @@ namespace SnakeEater.Patches
         {
             float height = Vector3.Distance(__instance.bottomOfLadderPosition.position, __instance.topOfLadderPosition.position);
 
-            SnakeEater.Logger.LogInfo("Ladder height: " + height);
-
             if (isUsing)
             {
-                FadeInCoroutine = __instance.StartCoroutine(MusicFadeIn());
+                if (SnakeEater.Restrict.Value && SnakeEater.HeightThreshold.Value <= height)
+                    PlaybackCoroutine = __instance.StartCoroutine(BeginPlayback());
             } else
             {
-                __instance.StopCoroutine(FadeInCoroutine);
-                SnakeEater.SnakeEaterAudioSource.Pause();
+                if (SnakeEater.SnakeEaterAudioSource.isPlaying)
+                {
+                    __instance.StopCoroutine(PlaybackCoroutine);
+                    SnakeEater.SnakeEaterAudioSource.Pause();
+                }
             }
         }
 
-        internal static IEnumerator MusicFadeIn()
+        internal static IEnumerator BeginPlayback()
         {
-            yield return (object)new WaitForSeconds(1f);
+            yield return (object)new WaitForSeconds(SnakeEater.AudioDelay.Value);
 
             AudioSource audioSource = SnakeEater.SnakeEaterAudioSource;
+
+            if (SnakeEater.Restart.Value)
+                audioSource.time = 0;
 
             audioSource.volume = 0f;
             audioSource.Play();
 
-            for (float i = 0; i < 3f; i += Time.deltaTime)
+            float fadeInDuration = SnakeEater.AudioFadeIn.Value;
+
+            while (audioSource.volume < SnakeEater.AudioVolume.Value)
             {
                 yield return null;
-                audioSource.volume += Time.deltaTime / 3f;
-                if (audioSource.volume >= SnakeEater.MAX_VOLUME)
-                {
-                    break;
-                }
+                audioSource.volume += Time.deltaTime / fadeInDuration;
             }
         }
     }
