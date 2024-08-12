@@ -14,7 +14,6 @@ namespace SnakeEater.Patches
     [HarmonyPatch(typeof(InteractTrigger))]
     internal class InteractTriggerPatch
     {
-
         static Coroutine PlaybackCoroutine;
 
         [HarmonyPatch("SetUsingLadderOnLocalClient")]

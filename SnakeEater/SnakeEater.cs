@@ -27,8 +27,6 @@ namespace SnakeEater
         internal static ConfigEntry<bool> Restrict;
         internal static ConfigEntry<float> HeightThreshold;
 
-
-
         // Configurable Audio Parameters
         internal static ConfigEntry<float> AudioVolume;
         internal static ConfigEntry<float> AudioFadeIn;

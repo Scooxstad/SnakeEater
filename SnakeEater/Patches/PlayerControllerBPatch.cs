@@ -8,7 +8,6 @@ namespace SnakeEater.Patches
     [HarmonyPatch(typeof(PlayerControllerB))]
     internal class PlayerControllerBPatch
     {
-
         [HarmonyPatch("ConnectClientToPlayerObject")]
         [HarmonyPostfix]
         private static void AttachAudioSource(PlayerControllerB __instance)
@@ -23,10 +22,6 @@ namespace SnakeEater.Patches
             {
                 SnakeEater.Logger.LogError("Failed to attach Snake Eater audio source");
             }
-
-
-            
         }
-
     }
 }
