@@ -2,13 +2,13 @@ using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 
-using LethalConfig;
 using LCSoundTool;
 using UnityEngine;
+using LethalConfig;
 using LethalConfig.ConfigItems;
 using LethalConfig.ConfigItems.Options;
 using BepInEx.Configuration;
-using System.Dynamic;
+using System.IO;
 
 namespace SnakeEater
 {
@@ -43,35 +43,44 @@ namespace SnakeEater
 
             Patch();
             InitializeConfig();
+            try
+            {
+                InitializeLethalConfigIntegration();
+            } catch (FileNotFoundException)
+            {
+                Logger.LogInfo("LethalConfig.dll not found");
+            }
 
             Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
         }
 
         internal void InitializeConfig()
         {
+            AudioVolume = Config.Bind("Audio Properties", "Volume", 0.5f, "Playback volume relative to source audio file");
+            AudioFadeIn = Config.Bind("Audio Properties", "Fade-in duration", 0.5f, "Duration of fade-in to playback in seconds");
+            AudioDelay = Config.Bind("Audio Properties", "Delay", 2f, "Time after mounting a ladder before playback beings in seconds");
+            
+            Restart = Config.Bind("General", "Restart audio", true, "Restarts the audio each time an applicable ladder is mounted");
+            Restrict = Config.Bind("General", "Restrict ladders", true, "Only allow ladders past a certain height threshold to begin playback");
+            HeightThreshold = Config.Bind("General", "Height threshold", 12f, "Minimum height which will allow playback when \"Restrict ladders\" is enabled");
+        }
+
+        internal void InitializeLethalConfigIntegration()
+        {
             LethalConfigManager.SetModDescription("SnakeEater");
 
-            Restart = Config.Bind("General", "Restart audio", true, "Restarts the audio each time an applicable ladder is mounted");
             LethalConfigManager.AddConfigItem(new BoolCheckBoxConfigItem(Restart, requiresRestart: false));
-            Restrict = Config.Bind("General", "Restrict ladders", true, "Only allow ladders past a certain height threshold to begin playback");
             LethalConfigManager.AddConfigItem(new BoolCheckBoxConfigItem(Restrict, requiresRestart: false));
-            HeightThreshold = Config.Bind("General", "Height threshold", 12f, "Minimum height which will allow playback when \"Restrict ladders\" is enabled");
             LethalConfigManager.AddConfigItem(new FloatInputFieldConfigItem(HeightThreshold, requiresRestart: false));
 
-
-            AudioVolume = Config.Bind("Audio Properties", "Volume", 0.5f, "Playback volume relative to source audio file");
             LethalConfigManager.AddConfigItem(new FloatSliderConfigItem(AudioVolume, new FloatSliderOptions { Max = 1.5f, Min = 0f, RequiresRestart = false }));
+            LethalConfigManager.AddConfigItem(new FloatInputFieldConfigItem(AudioFadeIn, requiresRestart: false));
+            LethalConfigManager.AddConfigItem(new FloatInputFieldConfigItem(AudioDelay, requiresRestart: false));
 
             AudioVolume.SettingChanged += delegate
             {
                 SnakeEaterAudioSource.volume = AudioVolume.Value;
             };
-
-            AudioFadeIn = Config.Bind("Audio Properties", "Fade-in duration", 0.5f, "Duration of fade-in to playback in seconds");
-            LethalConfigManager.AddConfigItem(new FloatInputFieldConfigItem(AudioFadeIn, requiresRestart: false));
-            AudioDelay = Config.Bind("Audio Properties", "Delay", 2f, "Time after mounting a ladder before playback beings in seconds");
-            LethalConfigManager.AddConfigItem(new FloatInputFieldConfigItem(AudioDelay, requiresRestart: false));
-
         }
 
         internal static void Patch()
