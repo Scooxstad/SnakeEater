@@ -1,5 +1,9 @@
-- **1.0.1**
+- **v1.1.0**
+    - Added configuration support for audio properties and other parameters.
+    - Added optional LethalConfig support
+
+- **v1.0.1**
     - Fixed compatibility issue with MoreCompany
 
-- **1.0.0**
+- **v1.0.0**
     - Initial release

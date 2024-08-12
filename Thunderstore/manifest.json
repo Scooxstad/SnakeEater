@@ -2,7 +2,7 @@
     "name": "SnakeEater",
     "version_number": "1.1.0",
     "website_url": "https://github.com/Scooxstad/SnakeEater",
-    "description": "Experience the thrill of Krasnogorje Tunnel's star attraction, now at any ladder of your choice!",
+    "description": "Experience the thrill of Krasnogorje Tunnel's star attraction, now at a dilapidated industrial facility near you!",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100",
         "no00ob-LCSoundTool-1.5.1"
