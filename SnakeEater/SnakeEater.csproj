@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <!-- BepInEx Properties -->
     <PropertyGroup>
-        <AssemblyName>Scooxstad.SnakeEater</AssemblyName>
+        <AssemblyName>scooxstad.snakeeater</AssemblyName>
         <Product>SnakeEater</Product>
         <!-- Change to whatever version you're currently on. -->
         <Version>1.0.1</Version>
@@ -56,6 +56,9 @@
     <ItemGroup>
       <Reference Include="LC_SoundTool">
         <HintPath>..\Dependencies\LC_SoundTool.dll</HintPath>
+      </Reference>
+      <Reference Include="LethalConfig">
+        <HintPath>..\Dependencies\LethalConfig.dll</HintPath>
       </Reference>
     </ItemGroup>
 </Project>
