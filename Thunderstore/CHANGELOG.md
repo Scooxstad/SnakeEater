@@ -1,3 +1,6 @@
+- **v1.1.3**
+    - Fixed compatibility issue with LCSoundTool
+
 - **v1.1.2**
     - Fixed HideManagerGameObject related bug
     - Removed LCSoundTool as dependency
