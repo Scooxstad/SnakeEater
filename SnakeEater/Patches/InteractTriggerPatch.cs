@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using GameNetcodeStuff;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
-using LCSoundTool;
-using System.Runtime.CompilerServices;
 using System.Collections;
 
 namespace SnakeEater.Patches
@@ -18,13 +11,13 @@ namespace SnakeEater.Patches
 
         [HarmonyPatch("SetUsingLadderOnLocalClient")]
         [HarmonyPrefix]
-        internal static void PrintLadderStatus(InteractTrigger __instance, bool isUsing)
+        internal static void TogglePlayback(InteractTrigger __instance, bool isUsing)
         {
             float height = Vector3.Distance(__instance.bottomOfLadderPosition.position, __instance.topOfLadderPosition.position);
 
             if (isUsing)
             {
-                if (SnakeEater.Restrict.Value && SnakeEater.HeightThreshold.Value <= height)
+                if (!SnakeEater.Restrict.Value || (SnakeEater.Restrict.Value && SnakeEater.HeightThreshold.Value <= height))
                     PlaybackCoroutine = __instance.StartCoroutine(BeginPlayback());
             } else
             {
@@ -38,7 +31,7 @@ namespace SnakeEater.Patches
 
         internal static IEnumerator BeginPlayback()
         {
-            yield return (object)new WaitForSeconds(SnakeEater.AudioDelay.Value);
+            yield return new WaitForSeconds(SnakeEater.AudioDelay.Value);
 
             AudioSource audioSource = SnakeEater.SnakeEaterAudioSource;
 
@@ -49,12 +42,23 @@ namespace SnakeEater.Patches
             audioSource.Play();
 
             float fadeInDuration = SnakeEater.AudioFadeIn.Value;
+            float targetVolume = SnakeEater.AudioVolume.Value / 2;
+            float timeElapsed = 0;
 
-            while (audioSource.volume < SnakeEater.AudioVolume.Value)
+            if (fadeInDuration > 0)
             {
-                yield return null;
-                audioSource.volume += Time.deltaTime / fadeInDuration;
+                while (timeElapsed < fadeInDuration)
+                {
+                    audioSource.volume = Mathf.Lerp(0, targetVolume, timeElapsed / fadeInDuration);
+                    timeElapsed += Time.deltaTime;
+                    yield return null;
+                }
+
+            } else
+            {
+                audioSource.volume = SnakeEater.AudioVolume.Value / 2;
             }
+
         }
     }
 }
