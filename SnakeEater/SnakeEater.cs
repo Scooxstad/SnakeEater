@@ -8,6 +8,7 @@ using LethalConfig.ConfigItems;
 using LethalConfig.ConfigItems.Options;
 using BepInEx.Configuration;
 using System.IO;
+using System.Reflection;
 
 namespace SnakeEater
 {
@@ -36,7 +37,8 @@ namespace SnakeEater
             Logger = base.Logger;
             Instance = this;
 
-            AssetBundle bundle = AssetBundle.LoadFromFile("BepInEx/plugins/Scooxstad-SnakeEater/snakeeater");
+            string sAssemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            AssetBundle bundle = AssetBundle.LoadFromFile(Path.Combine(sAssemblyLocation, "snakeeater"));
             SnakeEaterAudio = bundle.LoadAsset<AudioClip>("SnakeEater");
             SnakeEaterAudio.LoadAudioData();
 
