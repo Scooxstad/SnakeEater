@@ -2,7 +2,6 @@ using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 
-using LCSoundTool;
 using UnityEngine;
 using LethalConfig;
 using LethalConfig.ConfigItems;
@@ -36,8 +35,10 @@ namespace SnakeEater
         {
             Logger = base.Logger;
             Instance = this;
-            
-            SnakeEaterAudio = SoundTool.GetAudioClip("Scooxstad-SnakeEater", "Audio", "SnakeEater.mp3");
+
+            AssetBundle bundle = AssetBundle.LoadFromFile("BepInEx/plugins/Scooxstad-SnakeEater/snakeeater");
+            SnakeEaterAudio = bundle.LoadAsset<AudioClip>("SnakeEater");
+            SnakeEaterAudio.LoadAudioData();
 
             Patch();
             InitializeConfig();
@@ -54,9 +55,9 @@ namespace SnakeEater
 
         internal void InitializeConfig()
         {
-            AudioVolume = Config.Bind("Audio Properties", "Volume", 0.5f, "Playback volume relative to source audio file");
-            AudioFadeIn = Config.Bind("Audio Properties", "Fade-in duration", 0.5f, "Duration of fade-in to playback in seconds");
-            AudioDelay = Config.Bind("Audio Properties", "Delay", 2f, "Time after mounting a ladder before playback beings in seconds");
+            AudioVolume = Config.Bind("Audio Properties", "Volume", 1f, "Playback volume relative to source audio file");
+            AudioFadeIn = Config.Bind("Audio Properties", "Fade-in duration", 0.3f, "Duration of fade-in to playback in seconds");
+            AudioDelay = Config.Bind("Audio Properties", "Delay", 1f, "Time after mounting a ladder before playback beings in seconds");
             
             Restart = Config.Bind("General", "Restart audio", true, "Restarts the audio each time an applicable ladder is mounted");
             Restrict = Config.Bind("General", "Restrict ladders", true, "Only allow ladders past a certain height threshold to begin playback");
@@ -71,13 +72,13 @@ namespace SnakeEater
             LethalConfigManager.AddConfigItem(new BoolCheckBoxConfigItem(Restrict, requiresRestart: false));
             LethalConfigManager.AddConfigItem(new FloatInputFieldConfigItem(HeightThreshold, requiresRestart: false));
 
-            LethalConfigManager.AddConfigItem(new FloatSliderConfigItem(AudioVolume, new FloatSliderOptions { Max = 1.5f, Min = 0f, RequiresRestart = false }));
+            LethalConfigManager.AddConfigItem(new FloatSliderConfigItem(AudioVolume, new FloatSliderOptions { Max = 2f, Min = 0f, RequiresRestart = false }));
             LethalConfigManager.AddConfigItem(new FloatInputFieldConfigItem(AudioFadeIn, requiresRestart: false));
             LethalConfigManager.AddConfigItem(new FloatInputFieldConfigItem(AudioDelay, requiresRestart: false));
 
             AudioVolume.SettingChanged += delegate
             {
-                SnakeEaterAudioSource.volume = AudioVolume.Value;
+                SnakeEaterAudioSource.volume = AudioVolume.Value / 2;
             };
         }
 
