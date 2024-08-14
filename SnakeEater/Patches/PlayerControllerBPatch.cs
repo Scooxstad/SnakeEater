@@ -15,6 +15,7 @@ namespace SnakeEater.Patches
             AudioSource? audioSource = __instance.gameObject.AddComponent<AudioSource>();
 
             if (audioSource != null) {
+                audioSource.playOnAwake = false;
                 audioSource.clip = SnakeEater.SnakeEaterAudio;
                 SnakeEater.SnakeEaterAudioSource = audioSource;
                 SnakeEater.Logger.LogInfo("Audio source attached");
