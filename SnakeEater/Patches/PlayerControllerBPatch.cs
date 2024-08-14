@@ -12,11 +12,12 @@ namespace SnakeEater.Patches
         [HarmonyPostfix]
         private static void AttachAudioSource(PlayerControllerB __instance)
         {
-            AudioSource? audioSource = __instance.gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
+            AudioSource? audioSource = __instance.gameObject.AddComponent<AudioSource>();
 
             if (audioSource != null) {
                 audioSource.clip = SnakeEater.SnakeEaterAudio;
                 SnakeEater.SnakeEaterAudioSource = audioSource;
+                SnakeEater.Logger.LogInfo("Audio source attached");
             }
             else
             {
