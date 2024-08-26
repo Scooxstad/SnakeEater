@@ -1,3 +1,12 @@
+- **v1.1.6**
+    - Fixed critical bug where ladders could not be remounted after initial dismount. (Thanks to[@prototype464](https://github.com/prototype464) for bringing my attention to this!)
+
+- **v1.1.5**
+    - Fixed bug where music would keep playing if time spent on ladder was shorter than the configured delay
+
+- **v1.1.4**
+    - Added franchise tag to mod description
+
 - **v1.1.3**
     - Fixed compatibility issue with LCSoundTool
 

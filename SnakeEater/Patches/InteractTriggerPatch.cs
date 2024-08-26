@@ -21,11 +21,11 @@ namespace SnakeEater.Patches
                     PlaybackCoroutine = __instance.StartCoroutine(BeginPlayback());
             } else
             {
-                if (SnakeEater.SnakeEaterAudioSource.isPlaying)
-                {
+                if (PlaybackCoroutine != null)
                     __instance.StopCoroutine(PlaybackCoroutine);
+
+                if (SnakeEater.SnakeEaterAudioSource.isPlaying)
                     SnakeEater.SnakeEaterAudioSource.Pause();
-                }
             }
         }
 

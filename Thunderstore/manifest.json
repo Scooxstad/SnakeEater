@@ -1,8 +1,8 @@
 {
     "name": "SnakeEater",
-    "version_number": "1.1.3",
+    "version_number": "1.1.6",
     "website_url": "https://github.com/Scooxstad/SnakeEater",
-    "description": "Experience the thrill of Krasnogorje Tunnel's star attraction, now at a dilapidated industrial facility near you!",
+    "description": "Experience the thrill of Krasnogorje Tunnel's star attraction, now at a dilapidated industrial facility near you! [Metal Gear Solid]",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100"
     ]
